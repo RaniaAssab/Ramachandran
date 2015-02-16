@@ -23,13 +23,39 @@ function loadFile(type,pdb_id) {
     mol = loader.getFromID(pdb_id);
   }
 
-  // Alpha Carbon of the group #10 in the chain 'B'
-  //
-  var selected = mol.finder('ATOM', function (atom) { 
-    if ((atom.name === "CA" || atom.name === "N" || atom.name === "C") && atom.chain === "A" ) 
-      return true; 
-  });
-  console.log(selected);
+function calcul_normal(a,b,c){
+    var ab = new vec3();
+    var bc= new vec3();
+    ab = b.xyz - a.xyz; 
+    bc = c.xyz - b.xyz;
+    var n= new vec3() ;
+    cross(n,ab,bc);
+    return n;
+}
+
+function calcul_angle(a,b,c,d){
+    var N1 = new vec3();
+    var N2 = new vec3();
+    N1 = calcul_normal(a,b,c);
+    N2 = calcul_normal(a,b,d);
+    var cos_angle = dot(N1,N2);
+    return Math.acos(cos_angle);
+}
+
+
+var mol = loadFile("local","1KMV");
+var chains = mol.chains;
+for (var i = 0; i < chains.length; i++){
+    // extraction atomes
+    var selected = mol.finder('ATOM', 'CHAIN', function (atom) { 
+        if ((atom.name === "CA" || atom.name === "N" || atom.name === "C") && atom.chain === chains[i] ) 
+            return true; 
+        });
+    }
+    // calcul angles par chaine et par aa
+    console.log(selected);    
+}
+
   
   // Alpha Carbon of the group #10 in the chain 'B'
   /*var selected = mol.finder(
@@ -54,7 +80,6 @@ function loadFile(type,pdb_id) {
 
   console.log(selected);
   */
-}
 
 </script>
 
@@ -63,7 +88,7 @@ function loadFile(type,pdb_id) {
 <p>Load Local PDB File<input type="radio" id="local" name="local" value="y" onchange="loadFile('local','1LMB')">Yes<input type="radio" name="local" value="n" checked>No</p>
 <p>Load From RCSB PDB ID: <input type="text" id="distant"></input>&nbsp;<input type="submit" id="ok" onclick="loadFile('distant',document.getElementById('distant').value)"></input></p>
 
-<div id="1LMB" style="display:none">
+<div id="1KMV" style="display:none">
 HEADER    OXIDOREDUCTASE                          17-DEC-01   1KMV              
 TITLE     HUMAN DIHYDROFOLATE REDUCTASE COMPLEXED WITH NADPH AND (Z)-           
 TITLE    2 6-(2-[2,5-DIMETHOXYPHENYL]ETHEN-1-YL)-2,4-DIAMINO-5-                 
