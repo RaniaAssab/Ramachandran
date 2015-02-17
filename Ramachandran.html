@@ -14,14 +14,16 @@
 <script type="text/javascript">
 
 function loadFile(type,pdb_id) {
-  var mol = null;
-  var loader = new PDBLoader();
-  if (type === 'local') {
-    mol = loader.getFromDOM(pdb_id,'pdb');
-  }
-  else {
-    mol = loader.getFromID(pdb_id);
-  }
+    var mol = null;
+    var loader = new PDBLoader();
+    if (type === 'local') {
+        mol = loader.getFromDOM(pdb_id,'pdb');
+    }
+    else {
+        mol = loader.getFromID(pdb_id);
+    }
+    return mol;
+}
 
 function calcul_normal(a,b,c){
     var ab = new vec3();
@@ -42,50 +44,27 @@ function calcul_angle(a,b,c,d){
     return Math.acos(cos_angle);
 }
 
-
-var mol = loadFile("local","1KMV");
-var chains = mol.chains;
-for (var i = 0; i < chains.length; i++){
-    // extraction atomes
-    var selected = mol.finder('ATOM', 'CHAIN', function (atom) { 
-        if ((atom.name === "CA" || atom.name === "N" || atom.name === "C") && atom.chain === chains[i] ) 
-            return true; 
+function main(type,pdb_id) {
+    var mol = loadFile("local","1KMV");
+    for (var i = 0; i < mol.chains.length; i++){
+        // extraction atomes
+        var selected = mol.finder('ATOM', 'CHAIN', function (atom) { 
+            if ((atom.name === "CA" || atom.name === "N" || atom.name === "C") && atom.chain === mol.chains[i] ) 
+                return true; 
         });
+        // calcul angles par chaine et par aa
+        console.log(selected);    
     }
-    // calcul angles par chaine et par aa
-    console.log(selected);    
 }
 
   
-  // Alpha Carbon of the group #10 in the chain 'B'
-  /*var selected = mol.finder(
-    'BOND', 
-    function (bond) {
-      if ( bond.atom1.chain == "A" 
-        && (
-           (bond.atom1.name === "CA" && bond.atom2.name === "C" )
-        || (bond.atom1.name === "C"  && bond.atom2.name === "CA") 
-        || (bond.atom1.name === "C"  && bond.atom2.name === "O" ) 
-        || (bond.atom1.name === "O"  && bond.atom2.name === "C" ) 
-        || (bond.atom1.name === "N"  && bond.atom2.name === "CA") 
-        || (bond.atom1.name === "CA" && bond.atom2.name === "N" ) ) ) {
-        return true;
-      } 
-    });
   
-  console.log(selected.length + " bond(s) selected!");
-  for (var i=0; i< selected.length; i++) {
-    console.log(selected[i].atom1.groupID+'['+selected[i].atom1.name+';'+selected[i].atom2.name+']');
-  }
-
-  console.log(selected);
-  */
 
 </script>
 
 </head>
 <body>
-<p>Load Local PDB File<input type="radio" id="local" name="local" value="y" onchange="loadFile('local','1LMB')">Yes<input type="radio" name="local" value="n" checked>No</p>
+<p>Load Local PDB File<input type="radio" id="local" name="local" value="y" onchange="main('local','1KMV')">Yes<input type="radio" name="local" value="n" checked>No</p>
 <p>Load From RCSB PDB ID: <input type="text" id="distant"></input>&nbsp;<input type="submit" id="ok" onclick="loadFile('distant',document.getElementById('distant').value)"></input></p>
 
 <div id="1KMV" style="display:none">
