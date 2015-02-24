@@ -51,51 +51,51 @@ function calcul_angle(a,b,c,d){
 function main(type,pdb_id) {
     var mol = loadFile("local","1KMV");
     for (var i = 0; i < /*mol.chains.length*/1; i++){
-        // extraction atomes
+        // extraction atomes d'une chaine pour savoir combien de aa il y a dans la chaine
         var selected = mol.finder('ATOM', function (atom) { 
-            if ((atom.name === "CA" || atom.name === "N" || atom.name === "C" || atom.name === "O") && atom.chain === "A" ) 
+            if ((atom.name === "CA" || atom.name === "N" || atom.name === "C") && atom.chain === mol.chains[i] ) 
                 return true; 
         });
         // calcul angles par chaine et par aa 
+        // optimiser ?
         nb_aa=selected[selected.length-1].groupID
         for (var j = 4; j < /*nb_aa-1*/5; j++){
             var CA = mol.finder('ATOM', function (atom) { 
-            if (atom.name === "CA" && atom.groupID === j  && atom.chain === "A"  ) 
+            if (atom.name === "CA" && atom.groupID === j  && atom.chain === mol.chains[i] ) 
                 return true; 
         });
         var Ci = mol.finder('ATOM', function (atom) { 
-            if (atom.name === "C" && atom.groupID === j  && atom.chain === "A" ) 
+            if (atom.name === "C" && atom.groupID === j  && atom.chain === mol.chains[i] ) 
                 return true; 
         });
         var Cim1 = mol.finder('ATOM', function (atom) { 
-            if (atom.name === "C" && atom.groupID === j-1  && atom.chain === "A" ) 
+            if (atom.name === "C" && atom.groupID === j-1  && atom.chain === mol.chains[i] ) 
                 return true; 
         });
         var Ni = mol.finder('ATOM', function (atom) { 
-            if (atom.name === "N" && atom.groupID === j  && atom.chain === "A"  ) 
+            if (atom.name === "N" && atom.groupID === j  && atom.chain === mol.chains[i]  ) 
                 return true; 
         });
         var Nip1 = mol.finder('ATOM', function (atom) { 
-            if (atom.name === "C" && atom.groupID === j+1  && atom.chain === "A"  ) 
+            if (atom.name === "N" && atom.groupID === j+1  && atom.chain === mol.chains[i]  ) 
                 return true; 
         });
-        var CA = mol.finder('ATOM', function (atom) { 
-            if (atom.name === "CA" && atom.groupID === j  && atom.chain === "A"  ) 
-                return true; 
-        });
+        
         vecCA = vec3.fromValues(CA[0].x,CA[0].y,CA[0].z);
         vecCi = vec3.fromValues(Ci[0].x,Ci[0].y,Ci[0].z);
         vecNi = vec3.fromValues(Ni[0].x,Ni[0].y,Ni[0].z);
         vecNip1 = vec3.fromValues(Nip1[0].x,Nip1[0].y,Nip1[0].z);
+        vecCim1 = vec3.fromValues(Cim1[0].x,Cim1[0].y,Cim1[0].z);
 
         console.log(vecCA);
         console.log(vecCi);
+        console.log(vecCim1);
         console.log(vecNi);
         console.log(vecNip1);
-         console.log("cou");
+        console.log("cou");
         
         psi = calcul_angle(vecCA,vecCi,vecNi,vecNip1);
-        //phi = calcul_angle(CA,Ni,Ci,Cim1)
+        //phi = calcul_angle(vecCA,vecNi,vecCi,vecCim1);
         //console.log(phi);
         console.log("aa: "+CA[0].group);
         console.log("nb_aa: "+CA[0].groupID);
