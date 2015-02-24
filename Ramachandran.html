@@ -35,6 +35,7 @@ function calcul_normal(a,b,c){
     return n;
 }
 
+// resultat en degré (sans le signe)
 function calcul_angle(a,b,c,d){
     var N1 = vec3.create();
     var N2 = vec3.create();
@@ -44,7 +45,7 @@ function calcul_angle(a,b,c,d){
     var lenght_N1 = vec3.len(N1);
     var lenght_N2 = vec3.len(N2);
     var cos_angle = scalar_product / (lenght_N1 * lenght_N2);
-    return Math.acos(cos_angle);
+    return Math.acos(cos_angle)*180/pi;
 }
 
 function main(type,pdb_id) {
