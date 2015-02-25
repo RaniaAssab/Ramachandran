@@ -87,19 +87,18 @@ function main(type,pdb_id) {
         vecNip1 = vec3.fromValues(Nip1[0].x,Nip1[0].y,Nip1[0].z);
         vecCim1 = vec3.fromValues(Cim1[0].x,Cim1[0].y,Cim1[0].z);
 
-        console.log(vecCA);
-        console.log(vecCi);
-        console.log(vecCim1);
-        console.log(vecNi);
-        console.log(vecNip1);
-        console.log("cou");
+        /* CALCUL VU SUR UN AUTRE GITHUB
+        phi = findAngle(V1,V2)
+        if dotProduct(A,V2) > 0: phi = -phi
+        psi = findAngle(V2,V3)
+        if dotProduct(D,V2) < 0: psi = -psi*/
         
         psi = calcul_angle(vecCA,vecCi,vecNi,vecNip1);
-        //phi = calcul_angle(vecCA,vecNi,vecCi,vecCim1);
-        //console.log(phi);
+        phi = calcul_angle(vecCA,vecNi,vecCi,vecCim1);
         console.log("aa: "+CA[0].group);
         console.log("nb_aa: "+CA[0].groupID);
         console.log("psi: "+psi);
+        console.log("phi: "+phi);
         }
     }
 }  
