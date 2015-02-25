@@ -51,6 +51,17 @@ function calcul_angle(a,b,c,d){
     return angle;
 }
 
+/*
+   Amélioration possible : 
+   
+    - optimiser la sélection ? 
+    deux sélections faite : pour connaitre le nombre d'aa dans une chaine et ensuite sélectionner les bons atomes
+    le code est répéter 3 fois : 1er aa / dernier aa / aa entre le 1er et le dernier
+    
+    - proline ? glycine ?
+    
+    - retourner un tableau avec le label, le phi et le psi du aa ?
+*/
 function main(type,pdb_id) {
     var mol = loadFile("local","1KMV");
     for (var i = 0; i < /*mol.chains.length*/1; i++){
@@ -59,9 +70,33 @@ function main(type,pdb_id) {
             if ((atom.name === "CA" || atom.name === "N" || atom.name === "C") && atom.chain === mol.chains[i] ) 
                 return true; 
         });
-        // calcul angles par chaine et par aa 
-        // optimiser ?
+    
         nb_aa=selected[selected.length-1].groupID
+        
+        // calcul angle psi 1er aa
+        var CA = mol.finder('ATOM', function (atom) { 
+            if (atom.name === "CA" && atom.groupID === j  && atom.chain === mol.chains[i] ) 
+                return true; 
+        });
+        var Ci = mol.finder('ATOM', function (atom) { 
+            if (atom.name === "C" && atom.groupID === j  && atom.chain === mol.chains[i] ) 
+                return true; 
+        });
+        var Ni = mol.finder('ATOM', function (atom) { 
+            if (atom.name === "N" && atom.groupID === j  && atom.chain === mol.chains[i]  ) 
+                return true; 
+        });
+        var Nip1 = mol.finder('ATOM', function (atom) { 
+            if (atom.name === "N" && atom.groupID === j+1  && atom.chain === mol.chains[i]  ) 
+                return true; 
+        });
+        vecCA = vec3.fromValues(CA[0].x,CA[0].y,CA[0].z);
+        vecCi = vec3.fromValues(Ci[0].x,Ci[0].y,Ci[0].z);
+        vecNi = vec3.fromValues(Ni[0].x,Ni[0].y,Ni[0].z);
+        vecNip1 = vec3.fromValues(Nip1[0].x,Nip1[0].y,Nip1[0].z);
+        psi = calcul_angle(vecCA,vecCi,vecNi,vecNip1);
+        
+        // calcul angles du 2e à l'avant dernier aa
         for (var j = 4; j < /*nb_aa-1*/5; j++){
             var CA = mol.finder('ATOM', function (atom) { 
             if (atom.name === "CA" && atom.groupID === j  && atom.chain === mol.chains[i] ) 
@@ -97,6 +132,30 @@ function main(type,pdb_id) {
         console.log("psi: "+psi);
         console.log("phi: "+phi);
         }
+        
+        // calcul angle phi dernier aa
+        var CA = mol.finder('ATOM', function (atom) { 
+            if (atom.name === "CA" && atom.groupID === j  && atom.chain === mol.chains[i] ) 
+                return true; 
+        });
+        var Ci = mol.finder('ATOM', function (atom) { 
+            if (atom.name === "C" && atom.groupID === j  && atom.chain === mol.chains[i] ) 
+                return true; 
+        });
+        var Cim1 = mol.finder('ATOM', function (atom) { 
+            if (atom.name === "C" && atom.groupID === j-1  && atom.chain === mol.chains[i] ) 
+                return true; 
+        });
+        var Ni = mol.finder('ATOM', function (atom) { 
+            if (atom.name === "N" && atom.groupID === j  && atom.chain === mol.chains[i]  ) 
+                return true; 
+        });
+        
+        vecCA = vec3.fromValues(CA[0].x,CA[0].y,CA[0].z);
+        vecCi = vec3.fromValues(Ci[0].x,Ci[0].y,Ci[0].z);
+        vecNi = vec3.fromValues(Ni[0].x,Ni[0].y,Ni[0].z);
+        vecNip1 = vec3.fromValues(Nip1[0].x,Nip1[0].y,Nip1[0].z);
+        phi = calcul_angle(vecCA,vecNi,vecCi,vecCim1);
     }
 }  
 
