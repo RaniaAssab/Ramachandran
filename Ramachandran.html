@@ -61,10 +61,12 @@ function calcul_angle(a,b,c,d){
     - proline ? glycine ?
     
     - retourner un tableau avec le label, le phi et le psi du aa ?
+    
+    - si pas une chaine prot ?
 */
 function main(type,pdb_id) {
     var mol = loadFile("local","1KMV");
-    for (var i = 0; i < /*mol.chains.length*/1; i++){
+    for (var i = 0; i < mol.chains.length/*1*/; i++){
         // extraction atomes d'une chaine pour savoir combien de aa il y a dans la chaine
         var selected = mol.finder('ATOM', function (atom) { 
             if ((atom.name === "CA" || atom.name === "N" || atom.name === "C") && atom.chain === mol.chains[i] ) 
@@ -75,19 +77,19 @@ function main(type,pdb_id) {
         
         // calcul angle psi 1er aa
         var CA = mol.finder('ATOM', function (atom) { 
-            if (atom.name === "CA" && atom.groupID === j  && atom.chain === mol.chains[i] ) 
+            if (atom.name === "CA" && atom.groupID === 0  && atom.chain === mol.chains[i] ) 
                 return true; 
         });
         var Ci = mol.finder('ATOM', function (atom) { 
-            if (atom.name === "C" && atom.groupID === j  && atom.chain === mol.chains[i] ) 
+            if (atom.name === "C" && atom.groupID === 0  && atom.chain === mol.chains[i] ) 
                 return true; 
         });
         var Ni = mol.finder('ATOM', function (atom) { 
-            if (atom.name === "N" && atom.groupID === j  && atom.chain === mol.chains[i]  ) 
+            if (atom.name === "N" && atom.groupID === 0  && atom.chain === mol.chains[i]  ) 
                 return true; 
         });
         var Nip1 = mol.finder('ATOM', function (atom) { 
-            if (atom.name === "N" && atom.groupID === j+1  && atom.chain === mol.chains[i]  ) 
+            if (atom.name === "N" && atom.groupID === 1  && atom.chain === mol.chains[i]  ) 
                 return true; 
         });
         vecCA = vec3.fromValues(CA[0].x,CA[0].y,CA[0].z);
@@ -97,7 +99,7 @@ function main(type,pdb_id) {
         psi = calcul_angle(vecCA,vecCi,vecNi,vecNip1);
         
         // calcul angles du 2e à l'avant dernier aa
-        for (var j = 4; j < /*nb_aa-1*/5; j++){
+        for (var j = 4; j < nb_aa-1/*5*/; j++){
             var CA = mol.finder('ATOM', function (atom) { 
             if (atom.name === "CA" && atom.groupID === j  && atom.chain === mol.chains[i] ) 
                 return true; 
@@ -135,19 +137,19 @@ function main(type,pdb_id) {
         
         // calcul angle phi dernier aa
         var CA = mol.finder('ATOM', function (atom) { 
-            if (atom.name === "CA" && atom.groupID === j  && atom.chain === mol.chains[i] ) 
+            if (atom.name === "CA" && atom.groupID === nb_aa  && atom.chain === mol.chains[i] ) 
                 return true; 
         });
         var Ci = mol.finder('ATOM', function (atom) { 
-            if (atom.name === "C" && atom.groupID === j  && atom.chain === mol.chains[i] ) 
+            if (atom.name === "C" && atom.groupID === nb_aa  && atom.chain === mol.chains[i] ) 
                 return true; 
         });
         var Cim1 = mol.finder('ATOM', function (atom) { 
-            if (atom.name === "C" && atom.groupID === j-1  && atom.chain === mol.chains[i] ) 
+            if (atom.name === "C" && atom.groupID === nb_aa-1  && atom.chain === mol.chains[i] ) 
                 return true; 
         });
         var Ni = mol.finder('ATOM', function (atom) { 
-            if (atom.name === "N" && atom.groupID === j  && atom.chain === mol.chains[i]  ) 
+            if (atom.name === "N" && atom.groupID === nb_aa  && atom.chain === mol.chains[i]  ) 
                 return true; 
         });
         
