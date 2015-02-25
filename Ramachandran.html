@@ -44,8 +44,11 @@ function calcul_angle(a,b,c,d){
     var scalar_product = vec3.dot(N1,N2);
     var lenght_N1 = vec3.len(N1);
     var lenght_N2 = vec3.len(N2);
-    var cos_angle = scalar_product / (lenght_N1 * lenght_N2);
-    return Math.acos(cos_angle)*180/pi;
+    var angle = Math.acos(scalar_product / (lenght_N1 * lenght_N2))*180/Math.PI;
+    if (vec3.dot(c,N2) > 0){
+        angle = -angle;
+    } 
+    return angle;
 }
 
 function main(type,pdb_id) {
@@ -86,13 +89,7 @@ function main(type,pdb_id) {
         vecNi = vec3.fromValues(Ni[0].x,Ni[0].y,Ni[0].z);
         vecNip1 = vec3.fromValues(Nip1[0].x,Nip1[0].y,Nip1[0].z);
         vecCim1 = vec3.fromValues(Cim1[0].x,Cim1[0].y,Cim1[0].z);
-
-        /* CALCUL VU SUR UN AUTRE GITHUB
-        phi = findAngle(V1,V2)
-        if dotProduct(A,V2) > 0: phi = -phi
-        psi = findAngle(V2,V3)
-        if dotProduct(D,V2) < 0: psi = -psi*/
-        
+      
         psi = calcul_angle(vecCA,vecCi,vecNi,vecNip1);
         phi = calcul_angle(vecCA,vecNi,vecCi,vecCim1);
         console.log("aa: "+CA[0].group);
