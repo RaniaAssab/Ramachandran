@@ -45,7 +45,8 @@ function calcul_angle(a,b,c,d){
     var lenght_N1 = vec3.len(N1);
     var lenght_N2 = vec3.len(N2);
     var angle = Math.acos(scalar_product / (lenght_N1 * lenght_N2))*180/Math.PI;
-    if (vec3.dot(c,N2) > 0){
+    //détermination de l'angle
+    if (vec3.dot(c,N2) < 0){
         angle = -angle;
     } 
     return angle;
@@ -77,19 +78,19 @@ function main(type,pdb_id) {
         
         // calcul angle psi 1er aa
         var CA = mol.finder('ATOM', function (atom) { 
-            if (atom.name === "CA" && atom.groupID === 0  && atom.chain === mol.chains[i] ) 
+            if (atom.name === "CA" && atom.groupID === 1  && atom.chain === mol.chains[i] ) 
                 return true; 
         });
         var Ci = mol.finder('ATOM', function (atom) { 
-            if (atom.name === "C" && atom.groupID === 0  && atom.chain === mol.chains[i] ) 
+            if (atom.name === "C" && atom.groupID === 1  && atom.chain === mol.chains[i] ) 
                 return true; 
         });
         var Ni = mol.finder('ATOM', function (atom) { 
-            if (atom.name === "N" && atom.groupID === 0  && atom.chain === mol.chains[i]  ) 
+            if (atom.name === "N" && atom.groupID === 1  && atom.chain === mol.chains[i]  ) 
                 return true; 
         });
         var Nip1 = mol.finder('ATOM', function (atom) { 
-            if (atom.name === "N" && atom.groupID === 1  && atom.chain === mol.chains[i]  ) 
+            if (atom.name === "N" && atom.groupID === 2  && atom.chain === mol.chains[i]  ) 
                 return true; 
         });
         vecCA = vec3.fromValues(CA[0].x,CA[0].y,CA[0].z);
@@ -97,9 +98,12 @@ function main(type,pdb_id) {
         vecNi = vec3.fromValues(Ni[0].x,Ni[0].y,Ni[0].z);
         vecNip1 = vec3.fromValues(Nip1[0].x,Nip1[0].y,Nip1[0].z);
         psi = calcul_angle(vecCA,vecCi,vecNi,vecNip1);
+        console.log("aa: "+CA[0].group);
+        console.log("nb_aa: "+CA[0].groupID);
+        console.log("psi: "+psi); 
         
         // calcul angles du 2e à l'avant dernier aa
-        for (var j = 4; j < nb_aa-1/*5*/; j++){
+        for (var j = 2; j < nb_aa ; j++){
             var CA = mol.finder('ATOM', function (atom) { 
             if (atom.name === "CA" && atom.groupID === j  && atom.chain === mol.chains[i] ) 
                 return true; 
@@ -158,6 +162,9 @@ function main(type,pdb_id) {
         vecNi = vec3.fromValues(Ni[0].x,Ni[0].y,Ni[0].z);
         vecNip1 = vec3.fromValues(Nip1[0].x,Nip1[0].y,Nip1[0].z);
         phi = calcul_angle(vecCA,vecNi,vecCi,vecCim1);
+        console.log("aa: "+CA[0].group);
+        console.log("nb_aa: "+CA[0].groupID);
+        console.log("phi: "+phi);
     }
 }  
 
